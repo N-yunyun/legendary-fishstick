@@ -1,0 +1,12 @@
+～最初に～
+
+CSSファイルをHTMLで読み込むには
+
+<link rel="stylesheet" href="sample.css">を
+header(ヘッダー)のところの言語情報(<meta charset ="utf-8">など)の
+1行下に書き込む
+
+ブラケットの機能で、Ctrl + /でコメントアウトができる
+
+h1{ color: red; }
+h1タグの文字色を赤にする                                                

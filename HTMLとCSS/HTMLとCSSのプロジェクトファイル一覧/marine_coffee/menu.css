@@ -1,0 +1,38 @@
+@charset "utf-8";
+.menu{
+    padding: 90px 0 60px;
+    color: #5a5c5f;
+}
+
+.card{
+    /display: flex;
+}
+.menu-card-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+}
+.menu-card{
+    width: 33%;
+    margin-top: 35px;
+}
+.menu-card-inner{
+    padding: 25px 30px;
+    background-color: #dbe0e4;
+    border-radius: 7px;
+    box-shadow: 1px 1px 4px #d2d4d6;
+    text-align: center;
+    margin: 0 20px;
+
+}
+.menu-image{
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+.menu-title{
+    font-size: 14px;
+}
+.menu-text{
+    font-size: 14px;
+}
+
