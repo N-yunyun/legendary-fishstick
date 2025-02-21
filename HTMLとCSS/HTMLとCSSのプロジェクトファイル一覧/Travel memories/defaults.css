@@ -1,0 +1,100 @@
+@charset    "utf-8";
+*{
+    margin: 0;
+    padding: 0;
+    
+}
+.header{
+    
+    /*高さは56px*/
+    height: 56px;
+    /*幅は最大まで広げる*/
+    width: 100%;
+    line-height: 56px;
+    /*下に影を付ける*/
+    box-shadow: 0 0 10px #dddddd;
+    /*ページをスクロールしてもヘッダーが常に画面上部に表示され続ける*/
+    position: fixed;
+    /*画面上部からの表示位置を常に0に指定*/
+    top: 0;
+    background-color: white;
+    /*テキストを中央揃え*/
+    text-align: center;
+    color: black;
+    /*一番上に描画*/
+    z-index: 10;
+    
+}
+.Title{
+    
+    /*この文だけだと右寄せになるが*/
+    margin-left: auto;
+    /*この分だけだと左寄せになるが*/
+    /*上の文と下の文の二つを書くと中央寄せになる*/
+    margin-right: auto;
+    
+    /*テキストを中央揃え*/
+    text-align: center;
+    /*2番目に描画*/
+    z-index: 2;
+    /*色変更*/
+    color: black;
+    /*相対位置*/
+    position: relative;
+    
+}
+
+.main-visual{
+    
+    width: 100%;
+    height: 100%;
+     /*上180,下100,左右に30pxずつ余白*/
+    padding-top: 180px ;
+    padding-bottom:600px;
+    background-image: url("image/title.jpg");
+    background-size: cover;
+    opacity: 0.5;
+    
+    z-index: 1;
+    position: absolute;
+    
+}
+.title-text{
+    margin: 180px 50px 100px;
+    height: 130px;
+    width: 410px;
+    z-index: 2;
+    background-color: white;
+    position: absolute;
+}
+
+}
+.title{
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+.setumei{
+font-size: 20px;
+    margin-bottom: 30px;
+    
+}
+.main{
+    
+    z-index: 2;
+    position: absolute;
+    margin-top: 800px;
+    
+}
+.main h1{
+    /*テキストを中央揃え*/
+    text-align: center;
+}
+.main-image{
+    
+    width: 450px;
+    margin-bottom: 25px;
+    /*  影付け  */
+    box-shadow: 2px 2px 4px #b7b7b7;
+    /*角を丸くする*/
+    border-radius: 5px;
+}

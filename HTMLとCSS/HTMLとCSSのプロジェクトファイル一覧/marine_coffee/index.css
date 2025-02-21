@@ -1,0 +1,55 @@
+@charset "utf-8";
+
+.main-visual {
+    
+    /*上の余白*/
+    padding-top: 140px;
+    /*下の余白*/
+    padding-bottom: 100px;
+    /*背景画像*/
+    background-image: url("images/main.png");
+    /*背景画像が要素のサイズに沿って表示される*/
+    background-size: cover;
+    /*文字色変更*/
+    color: #f5f5f5;
+    /*  中央寄せ  */
+    text-align: center;
+}
+.top-tite{
+    /*文字の大きさ*/
+    font-size: 64px;
+    /*下の外側の余白*/
+    margin-bottom: 10px;
+}
+.top-subtitle{
+    /*文字の大きさ*/
+    font-size: 24px;
+    /*下の外側の余白*/
+    margin-bottom: 60px;
+}
+.top-text{
+    /*文字を少しだけ透明にする(数値指定0～1)*/
+    opacity: 0.9;
+}
+.main{
+    padding: 80px 0;
+    color: #5a5c5f;
+    text-align: center;
+}
+.main h2 {
+    margin-bottom: 25px;
+}
+.main-image{
+    width: 450px;
+    margin-bottom: 25px;
+}
+.main h3{
+    margin-bottom: 10px;
+}
+.main-image{
+    
+    /*  影付け  */
+    box-shadow: 2px 2px 4px #b7b7b7;
+    /*角を丸くする*/
+    border-radius: 5px;
+}

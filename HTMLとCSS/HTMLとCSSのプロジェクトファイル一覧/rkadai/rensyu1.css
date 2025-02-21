@@ -1,0 +1,43 @@
+@charset "utf-8";
+*{
+    /*margin と padding の設定を初期化*/
+    margin: 0;
+    padding: 0;
+}
+.header{
+    /*高さは40px*/
+    height: 40px;
+    /*margin-top: 8px;*/
+    /*文字を中央に表示する(縦から見て中央)*/
+    line-height: 40px;
+    /*ヘッダーはブラウザの幅いっぱいまで表示されてほしいので*/
+    width: 100%;
+    background-color: cyan;
+    /*ヘッダーを常に画面上部に表示*/
+    position: fixed;
+    top: 0;
+}
+.ue{
+    /*背景画像*/
+    background-image: url("tuika/5fcrm.jpeg");
+    /*高さ500px*/
+    height: 500px;
+    /*中央揃え*/
+    text-align: center;
+    /*文字色チョコレート*/
+    color: chocolate;
+    /*上の余白*/
+    padding-top: 140px;
+    /*下の余白*/
+    padding-bottom: 100px;
+    /*背景画像が要素のサイズに沿って表示される*/
+    background-size: cover;
+    
+    
+}
+.sita{
+    
+    font-size: 700px;
+    background-color: antiquewhite;
+    text-align: center;
+}
