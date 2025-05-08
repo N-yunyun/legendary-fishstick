@@ -1,34 +1,66 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 /// <summary>
-/// ゲームオブジェクトの定数データファイル
+/// 定数データファイル
 /// </summary>
 [CreateAssetMenu(menuName = "CreateData/ConstData")]
 public class WaterObjectConstData : ScriptableObject
 {
-    /// <summary>
-    /// 2つに割るときに使う
-    /// </summary>
-    [SerializeField]private int _divideIntoTwo = 2;
+    [Header("2つに割るときに使う")]
+    [SerializeField] private int _divideIntoTwo = 2;
     /// <summary>
     /// 2つに割るときに使う
     /// </summary>
     public int GetDivideIntoTwo
     {
-         get{ return _divideIntoTwo; }
+        get { return _divideIntoTwo; }
     }
-
+    [Header("次のオブジェクトが生成されるまでのクールタイム")]
+    [SerializeField]private float _nextObjectGeneratedCoolTime = 1f;
+    /// <summary>
+    /// 次のオブジェクトが生成されるまでのクールタイム
+    /// </summary>
+    public float NextObjectGeneratedCoolTime
+    {
+        get { return _nextObjectGeneratedCoolTime; }
+    }
+    [Header("スポナーの移動速度")]
+    [SerializeField]private float _spawnerMoveSpeed = 5f;
+    /// <summary>
+    /// スポナーの移動速度
+    /// </summary>
+    public float SpawnerMoveSpeed
+    {
+        get { return _spawnerMoveSpeed; }
+    }
+    [Header("スポナー移動の左側の限界値")]
+    [SerializeField]private float _spawnerLeftLimit = -2.45f;
+    /// <summary>
+    /// スポナー移動の左側の限界値
+    /// </summary>
+    public float SpawnerLeftLimit
+    {
+        get { return _spawnerLeftLimit; }
+    }
+    
+    [Header("スポナー移動の右側の限界値")]
+    [SerializeField] private float _spawnerRightLimit = 2.45f;
+    /// <summary>
+    /// スポナー移動の右側の限界値
+    /// </summary>
+    public float SpawnerRightLimit
+    {
+        get { return _spawnerRightLimit; }
+    }
     /// <summary>
     /// Lerp関数で指定する現在の位置
     /// </summary>
-    [SerializeField]private float _myCurrentPosition = 0.5f;
+    [Header("Lerp関数で指定する現在の位置")]
+    [SerializeField] private float _myCurrentPosition = 0.5f;
     /// <summary>
     /// Lerp関数で指定する現在の位置
     /// </summary>
     public float GetMyCurrentPosition
     {
-        get{ return _myCurrentPosition; }
+        get { return _myCurrentPosition; }
     }
 }

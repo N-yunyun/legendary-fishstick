@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
@@ -8,12 +7,13 @@ using UnityEngine;
 public class WaterDataArray : ScriptableObject
 {
     /// <summary>
-    /// 各オブジェクトのデータを配列で集めたもの
+    /// 各オブジェクトのデータの配列
     /// </summary>
-    //登場するオブジェクトはあらかじめ数が決まっているので配列にした
-    [SerializeField]public WaterVariousObjectData[] _waterDataArrays = new WaterVariousObjectData[7];
+    [Header("データファイルを追加する場合は\r\n必ずスクリプト上に追加するデータの名前を記入する")]
+    public List<WaterVariousObjectData> _waterDataArrays = new List<WaterVariousObjectData>();
     /// <summary>
     /// 定数データファイル
     /// </summary>
-    [SerializeField] private WaterObjectConstData _waterObjectCanstConstBase;
+    [Header("定数のデータファイル(ScriptableObject)をセット")]
+    [SerializeField]private WaterObjectConstData _waterObjectConstBase;
 }

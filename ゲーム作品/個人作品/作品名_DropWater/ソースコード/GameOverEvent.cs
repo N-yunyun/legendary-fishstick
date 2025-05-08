@@ -1,38 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 /// <summary>
 /// ゲームオーバーのイベントの内容をつかさどる
 /// </summary>
 public class GameOverEvent : MonoBehaviour
 {
     /// <summary>
-    /// 画面を暗くするために必要な画像(黒の半透明)
+    /// 画面を暗くするために必要な画像
     /// </summary>
-    [Header("GameOverPanelを入れる")]
+    [Header("GameOverPanelをセット")]
     [SerializeField] private Image _gameOverPanel;
     /// <summary>
     /// ゲームオーバーの文字
     /// </summary>
-    [Header("GameOverTextを入れる")]
+    [Header("GameOverTextをセット")]
     [SerializeField] private TextMeshProUGUI _gameOverText;
     [SerializeField]
-    private SceneRoadManager _sceneRoadManager;
-    // Start is called before the first frame update
-    void Start()
+    private SceneLoadManager _sceneRoadManager;
+    private void Start()
     {
         _gameOverPanel.enabled = false;
-
-        #region Action　メモ
-
-        //引数の型を指定していないAction型のものに追加するときは
-        //(Actionメソッド)名前　+= () => {　追加したい関数名(引数など);　};
-        //必ず「;」を括弧内と括弧外につける(計2個)
-        #endregion
-
     }
     /// <summary>
     /// ゲームオーバーになったときに画面の操作をできなくして文字を表示する
@@ -40,8 +28,11 @@ public class GameOverEvent : MonoBehaviour
     public void GameOverCall()
     {
         Debug.Log("ゲームオーバー！");
+        //ゲームオーバー画面と文字を有効化して表示する
         _gameOverPanel.enabled = true;
         _gameOverText.enabled = true;
-        _sceneRoadManager.RoadResultScene();
-            }
+
+        //リザルトシーンに移行する
+        _sceneRoadManager.LoadResultScene();
+    }
 }

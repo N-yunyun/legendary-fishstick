@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 /// <summary>
@@ -7,12 +5,15 @@ using TMPro;
 /// </summary>
 public class ResultScore : MonoBehaviour
 {
-    [SerializeField]private TextMeshProUGUI _resultScoreText;
-    // Start is called before the first frame update
+    /// <summary>
+    /// 最終スコアを表示するテキスト
+    /// </summary>
+    [Header("最終スコアを表示させたいテキストをセット")]
+    [SerializeField] private TextMeshProUGUI _resultScoreText;
     void Start()
     {
-        _resultScoreText = GetComponent<TextMeshProUGUI>();// TextMeshProコンポーネントを取得
+        //TextMeshProを取得して、最終スコアを文字型にして表示する
         _resultScoreText.text = ScoreDisplay.GetTotalScore.ToString();
     }
-    
+
 }

@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+/// <summary>
+/// オブジェクトデータファイル
+/// </summary>
 [CreateAssetMenu(menuName = "CreateData/WaterData")]
 public class WaterVariousObjectData : ScriptableObject
 {
     /// <summary>
-    ///水のタイプのカテゴリ
+    ///オブジェクトのタイプのカテゴリ
     /// </summary>
-    public enum _waterType
+    public enum WaterType
     {
         /// <summary>
         /// 雫
@@ -39,16 +40,17 @@ public class WaterVariousObjectData : ScriptableObject
         Sea,
     }
     /// <summary>
-    /// 自分の水のタイプ
+    /// 自分のオブジェクトのタイプ
     /// </summary>
     [Header("自分のタイプを設定する")]
-    [SerializeField]private _waterType _myWaterType;
+    [SerializeField]private WaterType _myWaterType;
     /// <summary>
-    /// 自分の水の種類(Get)
+    /// 自分のオブジェクトの種類(Get)
     /// </summary>
-    public _waterType MyWaterType
+    public WaterType MyWaterType
     {
-        get { return _myWaterType; }
+        get => _myWaterType;
+        private set { }
     }
     /// <summary>
     /// 自分のオブジェクトの名前
@@ -83,11 +85,11 @@ public class WaterVariousObjectData : ScriptableObject
     /// </summary>
     [Header("自分のオブジェクトを設定する")]
     [SerializeField]
-    private GameObject _myObject = null;
+    private GameObject _myObject = default;
     /// <summary>
     /// 自分のオブジェクト(GetSet)
     /// </summary>
-    public GameObject GetSetMyObject
+    public GameObject MyObjectPrefab
     {
         get => _myObject;
         set => _myObject = value;
@@ -97,15 +99,14 @@ public class WaterVariousObjectData : ScriptableObject
     /// </summary>
     [Header("自分が次に進化するオブジェクトを設定する")]
     [SerializeField]
-    private GameObject _nextEvolvingObject = null;
+    private WaterCollision _nextEvolvingObject = null;
     /// <summary>
     /// 自分が次に進化するオブジェクト
     /// </summary>
-    public GameObject GetSetNextEvolvingObject
+    public WaterCollision NextEvolvingObject
     {
         get => _nextEvolvingObject;
         set => _nextEvolvingObject = value;
     }
 
-    
 }

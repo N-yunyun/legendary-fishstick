@@ -1,53 +1,80 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 /// <summary>
 /// 次に出てくる水をランダムで選び、そのプレハブを取り出してスポナーに引き渡す
 /// </summary>
-public class RadomWaterSelect : MonoBehaviour
+public class RandomWaterSelect : MonoBehaviour
 {
+    #region 変数
     /// <summary>
-    /// 登場させたい水のリスト(WaterCollision型)
+    /// 登場させたいオブジェクトのリスト(WaterCollision型)
     /// </summary>
     /// <param name=""></param>
-    [Header("登場させたい水")] 
-    [SerializeField] private GameObject[] _WaterPrefabs;
-/// <summary>
-/// 登場させるオブジェクト
-/// </summary>
-    private GameObject reservedWaters;
+    [Header("登場させたいオブジェクトをセット")]
+    [SerializeField] private GameObject[] _waterPrefabs;
     /// <summary>
-    /// 登場させるオブジェクト(Get)
+    /// _WaterPrefabsの要素から取得したWaterCollisionを格納
     /// </summary>
-    public GameObject GetReservedWaters
+    private WaterCollision[] _waterCollisions;
+    /// <summary>
+    /// _waterPrefabsの要素と対応するプール情報を格納した配列
+    /// </summary>
+    private ObjectPool<WaterCollision>[] _waterPrefabPools;
+    /// <summary>
+    /// 生成したいオブジェクトのプール情報
+    /// </summary>
+    private ObjectPool<WaterCollision> _reservedObjectPool;
+    public GameObject ReservedObject { get; private set; }
+
+    #endregion
+    void OnEnable()
     {
-        get { return reservedWaters; }
-    }
-   
-    void Start()
-    {
-        Pop();//Popメソッドで次に出すべきプレファブを返す
-        /*
-         * 処理の仕組み
-         * 
-         * 登場させたい種類の数だけRandomWaterSelectorのインスペクターで配列を増やし、PrefabVariantを入れる
-         */
+        //_waterCollisionsの長さを_waterPrefabsの長さに合わせる
+        _waterCollisions = new WaterCollision[_waterPrefabs.Length];
+
+        //_waterPrefabPoolsの長さを_waterCollisionsに合わせる
+        _waterPrefabPools = new ObjectPool<WaterCollision>[_waterPrefabs.Length];
+
+        //_WaterPrefabsリストのオブジェクトからWaterCollisionを取得してリストに格納
+        for (int i = 0; i < _waterPrefabs.Length; i++)
+        {
+            _waterCollisions[i] = _waterPrefabs[i].GetComponent<WaterCollision>();
+            
+            if (!_waterPrefabs[i].TryGetComponent(out _waterCollisions[i]))
+            {
+                Debug.LogError($"{_waterPrefabs[i].name} に WaterCollision がアタッチされていません！");
+            }
+        }
+
+        //_waterPrefabsに対応しているプールをWaterCollisionを経由して取得
+        for (int i = 0; i < _waterCollisions.Length; i++)
+        {
+            _waterPrefabPools[i] =
+                ObjectPoolManager.Instance.GetPoolByType(_waterCollisions[i]._waterVariousObjectData.MyWaterType);
+
+        }
+
+        //次に出すべきプレファブとプール情報を選出
+        SelectNextWaterObject();
+
     }
     /// <summary>
-    /// ランダムで次に出すprefabを選ぶ
+    /// 次に出すオブジェクトをランダムで決めて、そのオブジェクトのプール情報を渡す
     /// </summary>
-    /// <returns>次に出すprefab</returns>
-    public GameObject Pop()
+    /// <returns>次に出すオブジェクトのプール情報</returns>
+    public ObjectPool<WaterCollision> SelectNextWaterObject()
     {
         //返す時に使う変数をわかりやすくした
-        int index = Random.Range(0, _WaterPrefabs.Length);//ランダムレンジ関数でランダムな値をインデックス指数に代入
-        reservedWaters = _WaterPrefabs[index];//ランダムなプレハブを選出
-        //Debug.Log(reservedWaters);
-        //Debug.Log(reservedWaters.gameObject.name);
+        int index = Random.Range(0, _waterPrefabs.Length);//ランダムレンジ関数でランダムな値をインデックス指数に代入
 
-        return reservedWaters;
+        //返す構造体にオブジェクト情報とプール情報を代入
+        _reservedObjectPool = _waterPrefabPools[index];
+
+        //ほかで参照できるようにするために参照用の変数に次に出すオブジェクトの情報を入れる
+        ReservedObject = _waterPrefabs[index];
+
+        return _reservedObjectPool;
     }
 
-    
 }

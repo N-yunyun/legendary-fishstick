@@ -1,19 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public class SceneRoadManager : MonoBehaviour
+/// <summary>
+/// シーンの読み込みをつかさどる
+/// </summary>
+public class SceneLoadManager : MonoBehaviour
 {
-    public void OnClickRoadGameScene()
+    /// <summary>
+    /// ゲームシーンを読み込む
+    /// </summary>
+    public void OnClickLoadGameScene()
     {
         SceneManager.LoadScene("GameScene");
     }
-    public void OnClickRoadTitleScene()
+    /// <summary>
+    /// タイトルシーンを読み込む
+    /// </summary>
+    public void OnClickLoadTitleScene()
     {
         SceneManager.LoadScene("TitleScene");
     }
-    public void RoadResultScene()
+    /// <summary>
+    /// リザルトシーンを読み込む
+    /// </summary>
+    public void LoadResultScene()
     {
         SceneManager.LoadScene("ResultScene");
     }
