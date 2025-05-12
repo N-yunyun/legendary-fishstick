@@ -9,11 +9,12 @@ public class ResultScore : MonoBehaviour
     /// 最終スコアを表示するテキスト
     /// </summary>
     [Header("最終スコアを表示させたいテキストをセット")]
-    [SerializeField] private TextMeshProUGUI _resultScoreText;
-    void Start()
+    [SerializeField] private TextMeshProUGUI _resultScoreText = default;
+
+   private void Start()
     {
-        //TextMeshProを取得して、最終スコアを文字型にして表示する
-        _resultScoreText.text = ScoreDisplay.GetTotalScore.ToString();
+        //ScoreManagerに保存されている最終スコアを文字型にして表示する
+        _resultScoreText.text = ScoreManager.Instance?.CurrentScore.ToString();
     }
 
 }

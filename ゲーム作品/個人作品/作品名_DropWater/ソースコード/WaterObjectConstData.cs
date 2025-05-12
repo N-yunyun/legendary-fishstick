@@ -6,13 +6,14 @@ using UnityEngine;
 public class WaterObjectConstData : ScriptableObject
 {
     [Header("2つに割るときに使う")]
-    [SerializeField] private int _divideIntoTwo = 2;
+    [SerializeField] private int _halfDivide = 2;
     /// <summary>
     /// 2つに割るときに使う
     /// </summary>
-    public int GetDivideIntoTwo
+    public int HalfDivider
     {
-        get { return _divideIntoTwo; }
+        get { return _halfDivide; }
+        private set { }
     }
     [Header("次のオブジェクトが生成されるまでのクールタイム")]
     [SerializeField]private float _nextObjectGeneratedCoolTime = 1f;
@@ -22,6 +23,7 @@ public class WaterObjectConstData : ScriptableObject
     public float NextObjectGeneratedCoolTime
     {
         get { return _nextObjectGeneratedCoolTime; }
+        private set { }
     }
     [Header("スポナーの移動速度")]
     [SerializeField]private float _spawnerMoveSpeed = 5f;
@@ -59,8 +61,21 @@ public class WaterObjectConstData : ScriptableObject
     /// <summary>
     /// Lerp関数で指定する現在の位置
     /// </summary>
-    public float GetMyCurrentPosition
+    public float MyCurrentPosition
     {
         get { return _myCurrentPosition; }
     }
+    /// <summary>
+    /// ObjectPoolの初期容量
+    /// </summary>
+    [Header("ObjectPoolの初期容量")]
+    private int _initialCapacity = 15;
+    /// <summary>
+    /// ObjectPoolの初期容量
+    /// </summary>
+    public int InitialCapacity
+    {
+        get { return _initialCapacity; }
+    }
+
 }

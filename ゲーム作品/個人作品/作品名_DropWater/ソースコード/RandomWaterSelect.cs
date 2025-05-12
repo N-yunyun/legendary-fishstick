@@ -14,21 +14,26 @@ public class RandomWaterSelect : MonoBehaviour
     [Header("登場させたいオブジェクトをセット")]
     [SerializeField] private GameObject[] _waterPrefabs;
     /// <summary>
-    /// _WaterPrefabsの要素から取得したWaterCollisionを格納
+    /// _waterPrefabsの要素から取得したWaterCollisionを格納
     /// </summary>
-    private WaterCollision[] _waterCollisions;
+    private WaterCollision[] _waterCollisions = null;
     /// <summary>
     /// _waterPrefabsの要素と対応するプール情報を格納した配列
     /// </summary>
-    private ObjectPool<WaterCollision>[] _waterPrefabPools;
+    private ObjectPool<WaterCollision>[] _waterPrefabPools = null;
     /// <summary>
     /// 生成したいオブジェクトのプール情報
     /// </summary>
-    private ObjectPool<WaterCollision> _reservedObjectPool;
-    public GameObject ReservedObject { get; private set; }
+    public ObjectPool<WaterCollision> ReservedObjectPool { get; private set; } = null;
+    public GameObject ReservedObject { get; private set; } = null;
 
     #endregion
-    void OnEnable()
+    //初期化処理とコンポーネントの取得
+    private void Awake()
+    {
+        InitializeVariables();
+    }
+    private void Start()
     {
         //_waterCollisionsの長さを_waterPrefabsの長さに合わせる
         _waterCollisions = new WaterCollision[_waterPrefabs.Length];
@@ -36,45 +41,43 @@ public class RandomWaterSelect : MonoBehaviour
         //_waterPrefabPoolsの長さを_waterCollisionsに合わせる
         _waterPrefabPools = new ObjectPool<WaterCollision>[_waterPrefabs.Length];
 
-        //_WaterPrefabsリストのオブジェクトからWaterCollisionを取得してリストに格納
+        //_WaterPrefabsリストのオブジェクトから
+        //WaterCollision、プール情報を取得してリストに格納
         for (int i = 0; i < _waterPrefabs.Length; i++)
         {
             _waterCollisions[i] = _waterPrefabs[i].GetComponent<WaterCollision>();
-            
-            if (!_waterPrefabs[i].TryGetComponent(out _waterCollisions[i]))
-            {
-                Debug.LogError($"{_waterPrefabs[i].name} に WaterCollision がアタッチされていません！");
-            }
-        }
 
-        //_waterPrefabsに対応しているプールをWaterCollisionを経由して取得
-        for (int i = 0; i < _waterCollisions.Length; i++)
-        {
             _waterPrefabPools[i] =
                 ObjectPoolManager.Instance.GetPoolByType(_waterCollisions[i]._waterVariousObjectData.MyWaterType);
+
+
 
         }
 
         //次に出すべきプレファブとプール情報を選出
-        SelectNextWaterObject();
-
+        SelectNextDroppingGameObjectsInfo();
+    }
+   
+    private void InitializeVariables()
+    {
+        ReservedObject = null;
+        _waterCollisions = null;
+        _waterPrefabPools = null;
     }
     /// <summary>
     /// 次に出すオブジェクトをランダムで決めて、そのオブジェクトのプール情報を渡す
     /// </summary>
     /// <returns>次に出すオブジェクトのプール情報</returns>
-    public ObjectPool<WaterCollision> SelectNextWaterObject()
+    public void SelectNextDroppingGameObjectsInfo()
     {
         //返す時に使う変数をわかりやすくした
         int index = Random.Range(0, _waterPrefabs.Length);//ランダムレンジ関数でランダムな値をインデックス指数に代入
 
         //返す構造体にオブジェクト情報とプール情報を代入
-        _reservedObjectPool = _waterPrefabPools[index];
+        ReservedObjectPool = _waterPrefabPools[index];
 
         //ほかで参照できるようにするために参照用の変数に次に出すオブジェクトの情報を入れる
         ReservedObject = _waterPrefabs[index];
 
-        return _reservedObjectPool;
     }
-
 }

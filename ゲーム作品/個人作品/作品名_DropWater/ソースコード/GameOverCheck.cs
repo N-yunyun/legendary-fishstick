@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameOverCheck : MonoBehaviour
 
 {
+    #region 変数
     /// <summary>
     /// 一定時間待ち、待ち終わったらゲームオーバーにするコルーチン
     /// </summary>
@@ -13,17 +14,17 @@ public class GameOverCheck : MonoBehaviour
     /// <summary>
     /// (処理を待たせたい)監視させたい時間
     /// </summary>
-    private float _waitTime = 1.0f;
+    private float _MonitoringTime = 2.0f;
     /// <summary>
     /// キャッシュしておいたWaitForSeconds
     /// </summary>
-    private WaitForSeconds waitForSeconds;
+    private WaitForSeconds _waitTime;
     [Header("GameOverEventがアタッチされたオブジェクトをセット")]
     [SerializeField] private GameOverEvent _gameOverDisplay;
-
+    #endregion
     private void Start()
     {
-        waitForSeconds = new WaitForSeconds(_waitTime);
+        _waitTime = new WaitForSeconds(_MonitoringTime);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -58,9 +59,9 @@ public class GameOverCheck : MonoBehaviour
     private IEnumerator WaitAndGameOver()
     {
         //水が枠内に入っているか監視するため、指定時間待つ
-        yield return waitForSeconds;
+        yield return _waitTime;
         //待ち終わったらゲームオーバーイベントを呼ぶ
-        _gameOverDisplay.GameOverCall();
+        _gameOverDisplay.CallGameOver();
 
         _runningCoroutine = null;
     }

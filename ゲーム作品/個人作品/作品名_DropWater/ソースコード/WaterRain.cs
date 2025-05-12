@@ -7,52 +7,55 @@ using UnityEngine.Pool;
 /// </summary>
 public class WaterRain : MonoBehaviour
 {
+    #region 変数
     //インスペクターで連携
     [SerializeField]
-    private RandomWaterSelect _randomWaterSelector = null;
+    private RandomWaterSelect _randomWaterSelector;
     /// <summary>
     /// ランダムに選出したオブジェクトのプール情報
     /// </summary>
-    [SerializeField]
-    private ObjectPool<WaterCollision> _poppedWatersPool;
+    private ObjectPool<WaterCollision> _poppedObjectPool = default;
     /// <summary>
-    /// 落とす予定のプレハブ(最終決定分)
+    /// 落とす予定のプレハブ
     /// </summary>
-    [SerializeField]
-    private WaterCollision _droppingPrefab = null;
+    private WaterCollision _droppingPrefab = default;
     /// <summary>
     /// 次に落ちてくるオブジェクトの画像イメージ
     /// </summary>
     [SerializeField]
-    private NextImage _nextImage = null;
+    private NextImage _nextImage = default;
     /// <summary>
     /// 定数データファイル
     /// </summary>
     [Header("定数のデータファイル(ScriptableObject)をセット")]
-    [SerializeField] private WaterObjectConstData _waterObjectCanstConstBase;    
+    [SerializeField] private WaterObjectConstData _waterObjectConstBase = default;
     /// <summary>
     /// キャッシュ用
     /// </summary>
-    private WaitForSeconds _waitForSeconds = null;
+    private WaitForSeconds _specifiedWaitForSeconds = null;
     /// <summary>
     /// 落とす予定のオブジェクトのリジッドボディ
     /// </summary>
-    private Rigidbody2D _droppingPrefabsRb2d;
-
+    private Rigidbody2D _droppingPrefabsRigidbody;
+    /// <summary>
+    /// プレイヤーの横の入力値
+    /// </summary>
     private float _horizontalInputValue = default;
-    private float _tranformX = default;
-
+    /// <summary>
+    /// 調整されたスポナーのpositionのxの値
+    /// </summary>
+    private float _ControlledTransformPositionX = default;
+    #endregion
 
     //初期化処理
     private void Awake()
     {
         InitializeVariables();
     }
-    void Start()
+    private void Start()
     {
         //ガーベジコレクションを防ぐため、キャッシュする
-        if (_randomWaterSelector != null)
-            _waitForSeconds = new WaitForSeconds(_waterObjectCanstConstBase.NextObjectGeneratedCoolTime);
+        _specifiedWaitForSeconds = new WaitForSeconds(_waterObjectConstBase.NextObjectGeneratedCoolTime);
 
         //水を生成するスクリプトを引数1秒でコルーチン発動
         StartCoroutine(HandleWater());
@@ -63,48 +66,41 @@ public class WaterRain : MonoBehaviour
     /// </summary>
     private IEnumerator HandleWater()
     {
-        _poppedWatersPool = _randomWaterSelector.SelectNextWaterObject();
+        //選出したオブジェクトのプール情報を受け取る
+        ReceiveNextPoppedObjectPool();
 
         //指定時間待つ
-        yield return _waitForSeconds;
+        yield return _specifiedWaitForSeconds;
 
         //プールから指定のオブジェクトを生成
-        _droppingPrefab = _poppedWatersPool.Get();
+        _droppingPrefab = _poppedObjectPool.Get();
 
-        //生成したオブジェクトの物理挙動を制御するために取得する
-        _droppingPrefabsRb2d = _droppingPrefab.gameObject.GetComponent<Rigidbody2D>();
+        //自由落下を制御するため、Rigidbody2Dを取得する
+        _droppingPrefabsRigidbody = _droppingPrefab.GetComponent<Rigidbody2D>();
 
         //生成後処理(自身のtransformに生成したオブジェクトを合わせ後、そのまま自身の子にする)
-        MatchPositionAndRotationIsGeneratedObjectWithMyself();
+        SetTransformToSelf();
         MakeGeneratedObjectOwnChild();
 
         //画像を次に出てるオブジェクトに差し替える
         _nextImage.NextImageInsert();
 
-
         //自由落下しないようにする
-        _droppingPrefabsRb2d.isKinematic = true;
+        _droppingPrefabsRigidbody.isKinematic = true;
     }
 
-    void Update()
+    private void Update()
     {
-        //オブジェクトの位置が制限値内に収まるように制限する
-        if(!Input.GetKeyDown(KeyCode.RightArrow)&&!Input.GetKeyDown(KeyCode.LeftArrow)&&!Input.GetKeyDown(KeyCode.Space))
-        {
-            return;
-        }
-
-        //左右キーで移動
-        _horizontalInputValue = Input.GetAxisRaw("Horizontal") * _waterObjectCanstConstBase.SpawnerMoveSpeed * Time.deltaTime;
-        _tranformX = Mathf.Clamp(transform.position.x + _horizontalInputValue, _waterObjectCanstConstBase.SpawnerLeftLimit, _waterObjectCanstConstBase.SpawnerRightLimit);//最小と最大を設定し入力された値を範囲を超えないように制限
-        transform.position = new Vector3(_tranformX, transform.position.y, transform.position.z);
+        //左右キーで横方向に移動
+        MoveHorizontall();
+        //移動が指定した範囲を超えないように制限する
+        MoveAreaRestricted();
 
         //水が生成されていないときは切り離せないようにする
-        if (Input.GetKeyDown(KeyCode.Space) && _droppingPrefab != null)
+        if (Input.GetKey(KeyCode.Space) && _droppingPrefab != null)
         {
-            //自由落下をオンにしてオブジェクトを切り離す
-            _droppingPrefabsRb2d.isKinematic = false;
-            _droppingPrefab.transform.SetParent(null);
+            //オブジェクトを切り離す
+            DetachObject();
 
             //次に取り出すオブジェクトの枠を開けておくために変数を初期化する
             InitializeVariables();
@@ -114,6 +110,14 @@ public class WaterRain : MonoBehaviour
 
         }
 
+    }
+    /// <summary>
+    /// 選出されたオブジェクトのプール情報を受け取る
+    /// </summary>
+    private void ReceiveNextPoppedObjectPool()
+    {
+        _randomWaterSelector.SelectNextDroppingGameObjectsInfo();
+        _poppedObjectPool = _randomWaterSelector.ReservedObjectPool;
     }
     /// <summary>
     /// 受け取った生成オブジェクトを自分の子供にする
@@ -128,15 +132,43 @@ public class WaterRain : MonoBehaviour
     private void InitializeVariables()
     {
         _droppingPrefab = null;
-        _droppingPrefabsRb2d = null;
+        _droppingPrefabsRigidbody = null;
     }
     /// <summary>
     /// 生成されたオブジェクトの位置と回転を自分(スポナー)に合わせる
     /// </summary>
-    private void MatchPositionAndRotationIsGeneratedObjectWithMyself()
+    private void SetTransformToSelf()
     {
         //生成したオブジェクトの位置と回転を自身のオブジェクトに合わせる
         _droppingPrefab.gameObject.transform.SetLocalPositionAndRotation(this.transform.position, Quaternion.identity);
+    }
+    /// <summary>
+    ///オブジェクトを切り離す
+    /// </summary>
+    private void DetachObject()
+    {
+        //自由落下をオンにしてオブジェクトを切り離す
+        _droppingPrefabsRigidbody.isKinematic = false;
+        _droppingPrefab.transform.SetParent(null);
+
+    }
+    /// <summary>
+    /// 左右キーの入力値で横に移動する
+    /// </summary>
+    private void MoveHorizontall()
+    {
+        //左右キーで移動
+        _horizontalInputValue = 
+            Input.GetAxisRaw("Horizontal") * _waterObjectConstBase.SpawnerMoveSpeed * Time.deltaTime;
+    }
+    /// <summary>
+    /// 移動範囲を制限する
+    /// </summary>
+    private void MoveAreaRestricted()
+    {
+        //最小と最大を設定し入力された値を範囲を超えないように制限
+        _ControlledTransformPositionX = Mathf.Clamp(transform.position.x + _horizontalInputValue, _waterObjectConstBase.SpawnerLeftLimit, _waterObjectConstBase.SpawnerRightLimit);
+        transform.position = new Vector3(_ControlledTransformPositionX, transform.position.y, transform.position.z);
 
     }
 }

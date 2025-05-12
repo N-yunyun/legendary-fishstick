@@ -4,42 +4,31 @@ using System.Collections.Generic;
 /// <summary>
 /// オブジェクトプールを管理する(シングルトン)
 /// </summary>
-public class ObjectPoolManager : MonoBehaviour
+public class ObjectPoolManager : Singleton<ObjectPoolManager>
 {
     #region 変数
-    public static ObjectPoolManager Instance { get; private set; }
     /// <summary>
     /// WaterType に対応する WaterCollision のプールを格納した Dictionary
     /// </summary>
-    private Dictionary<WaterVariousObjectData.WaterType, ObjectPool<WaterCollision>> _poolByWaterType;
+    private Dictionary<WaterVariousObjectData.WaterType, ObjectPool<WaterCollision>> _poolByWaterType = default;
     /// <summary>
     /// 各オブジェクトデータや定数データをすべて格納したデータファイル
     /// </summary>
     [Header("オブジェクトデータ(ScriptableObject)をセット")]
     [SerializeField]
-    private WaterDataArray _waterDataArray;
+    private WaterDataBase _waterDataArray = default;
     #endregion
-    void Awake()
+    protected override void Awake()
     {
-        //シングルトンのnullチェック
-        // すでにインスタンスが存在する場合（別の ObjectPoolManager がシーンに存在する場合）
-        if (Instance != null && Instance != this)
-        {
-            Debug.LogError("ObjectPoolManager のインスタンスが複数存在します！");
+        // 基底クラスの Awake() の処理を最初に実行する
+        base.Awake();
 
-            // 新しく作られた方を破棄
-            Destroy(gameObject);
-        }
-        else
-        {
-            //このインスタンスを唯一のインスタンスとして保存
-            Instance = this;
-            //初期化処理
-            _poolByWaterType = 
+        //初期化処理
+        _poolByWaterType =
                 new Dictionary<WaterVariousObjectData.WaterType, ObjectPool<WaterCollision>>();
-            //オブジェクトプールを初期化
-            InitializePools();
-        }
+        //オブジェクトプールを初期化
+        InitializePools();
+
     }
     /// <summary>
     /// データファイルを基に各オブジェクトプールを初期化する
@@ -47,15 +36,22 @@ public class ObjectPoolManager : MonoBehaviour
     private void InitializePools()
     {
         //_waterDataArraysの要素(登場させたいオブジェクトのデータの種類)数だけ行う
-        foreach (WaterVariousObjectData data in _waterDataArray._waterDataArrays)
+        foreach (WaterVariousObjectData data in _waterDataArray._waterDataList)
         {
+            //要素のプレハブ
             GameObject indexPrefab = data.MyObjectPrefab;
+
+            //要素のオブジェクトタイプ
             WaterVariousObjectData.WaterType indexType = data.MyWaterType;
 
+            //
             ObjectPool<WaterCollision> objectPool = new ObjectPool<WaterCollision>(
                 createFunc: () =>
                 {
+                    //要素のプレハブと同じプレハブが生成されるようにする
                     GameObject instance = Instantiate(indexPrefab);
+
+                    //WaterCollision型なのでコンポーネントを取得
                     WaterCollision prefabWaterCollision = instance.GetComponent<WaterCollision>();
 
                     //コンポーネントのnullチェック
@@ -63,17 +59,32 @@ public class ObjectPoolManager : MonoBehaviour
                     {
                         Debug.LogError("WaterCollision がアタッチされていません：" + instance.name);
                     }
+
                     return prefabWaterCollision;
                 },
                 actionOnGet: obj => obj.gameObject.SetActive(true),
                 actionOnRelease: obj => obj.gameObject.SetActive(false),
-                actionOnDestroy: obj => Destroy(obj.gameObject),
                 collectionCheck: true,
-                defaultCapacity: 10,
-                maxSize: 40
+                defaultCapacity: 15,
+                maxSize: 30
             );
 
+            //初期容量までオブジェクトを生成して格納する
+            CreateObjectsUpToCapacity(objectPool, _waterDataArray._waterObjectConstBase.InitialCapacity);
             _poolByWaterType[indexType] = objectPool;
+        }
+    }
+    /// <summary>
+    /// 初期容量のサイズまでオブジェクトを生成してプールに格納する
+    /// </summary>
+    /// <param name="pool"></param>
+    /// <param name="capacity"></param>
+    public void CreateObjectsUpToCapacity(ObjectPool<WaterCollision> pool, int capacity)
+    {
+        for (int i = 0; i < capacity; i++)
+        {
+            WaterCollision waterObj = pool.Get();
+            pool.Release(waterObj);
         }
     }
     /// <summary>
