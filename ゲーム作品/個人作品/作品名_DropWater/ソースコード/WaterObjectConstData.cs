@@ -77,5 +77,17 @@ public class WaterObjectConstData : ScriptableObject
     {
         get { return _initialCapacity; }
     }
+    /// <summary>
+    /// ObjectPool‚ÌÅ‘å—e—Ê
+    /// </summary>
+    [Header("ObjectPool‚ÌÅ‘å—e—Ê")]
+    private int _maximumCapacity = 15;
+    /// <summary>
+    /// ObjectPool‚ÌÅ‘å—e—Ê
+    /// </summary>
+    public int MaximumCapacity
+    {
+        get { return _maximumCapacity; }
+    }
 
 }

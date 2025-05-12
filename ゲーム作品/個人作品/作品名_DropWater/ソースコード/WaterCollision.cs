@@ -68,7 +68,8 @@ public class WaterCollision : ObjectCreationMediate
     /// プールに返却するかのフラグ
     /// </summary>
     private bool _shouldRelease = false;
-    
+    private SpriteRenderer _sprite = null;
+    private Collider2D _collider = null;
     /// <summary>
     /// 自身のインスタンスの一意の識別子
     /// </summary>
@@ -77,14 +78,12 @@ public class WaterCollision : ObjectCreationMediate
     {
         get { return GetInstanceID(); }
     }
-
-    
-
     #endregion
     private void Awake()
     {
         InitializeVariables();
-
+        _sprite = GetComponent<SpriteRenderer>();
+        _collider = GetComponent<Collider2D>();
         //自分のリジッドボディを取得
         _thisRigidbody = gameObject.GetComponent<Rigidbody2D>();
     }
@@ -105,17 +104,14 @@ public class WaterCollision : ObjectCreationMediate
             if (_evolvedObjectPool == null)
             {
                 Debug.LogError("進化先のオブジェクトに対応するプールがありません！");
-
             }
         }
-
         //オブジェクトプールのnullチェック
         if (_myObjectPool == null)
         {
             Debug.LogError("自分のオブジェクトに対応するプールがありません！");
             return;
         }
-
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -239,5 +235,34 @@ public class WaterCollision : ObjectCreationMediate
         _othersWaterCollision = null;
 
     }
-
+    /// <summary>
+    /// オブジェクト(コンポーネント)を有効化する
+    /// </summary>
+    public void EnableVisuals()
+    {
+        //スプライトとコライダーを無効化する
+        _sprite.enabled = true;
+        _collider.enabled = true;
+        _thisRigidbody.simulated = true;
+    }
+    /// <summary>
+    /// コンポーネントを無効化する
+    /// </summary>
+    public void DisableVisuals()
+    {
+        //スプライトとコライダーを無効化する
+        _sprite.enabled = false;
+        _collider.enabled = false;
+        //自由落下をオフにしてオブジェクトが落ちないようにする
+        _thisRigidbody.simulated = false;
+    }
+    /// <summary>
+    /// Rigidbody2Dの値をリセットする
+    /// </summary>
+    public void ResetPhysicsState()
+    {
+        _thisRigidbody.velocity = Vector2.zero;
+        _thisRigidbody.angularVelocity = default;
+        _thisRigidbody.rotation = default;
+    }
 }

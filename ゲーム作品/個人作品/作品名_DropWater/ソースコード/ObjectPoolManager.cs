@@ -62,11 +62,18 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
 
                     return prefabWaterCollision;
                 },
-                actionOnGet: obj => obj.gameObject.SetActive(true),
-                actionOnRelease: obj => obj.gameObject.SetActive(false),
+                actionOnGet: obj =>
+                {
+                    obj.EnableVisuals();
+                },
+                actionOnRelease: obj =>
+                {
+                    obj.DisableVisuals();
+                    obj.ResetPhysicsState();
+                },
                 collectionCheck: true,
-                defaultCapacity: 15,
-                maxSize: 30
+                defaultCapacity: _waterDataArray._waterObjectConstBase.InitialCapacity,
+                maxSize: _waterDataArray._waterObjectConstBase.MaximumCapacity
             );
 
             //初期容量までオブジェクトを生成して格納する

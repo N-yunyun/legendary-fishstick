@@ -82,11 +82,13 @@ public class WaterRain : MonoBehaviour
         SetTransformToSelf();
         MakeGeneratedObjectOwnChild();
 
+        //自由落下しないようにする
+        _droppingPrefabsRigidbody.isKinematic = true;
+
         //画像を次に出てるオブジェクトに差し替える
         _nextImage.NextImageInsert();
 
-        //自由落下しないようにする
-        _droppingPrefabsRigidbody.isKinematic = true;
+        
     }
 
     private void Update()
