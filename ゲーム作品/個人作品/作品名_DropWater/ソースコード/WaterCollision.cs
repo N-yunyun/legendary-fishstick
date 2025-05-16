@@ -73,8 +73,7 @@ public class WaterCollision : ObjectCreationMediate
     /// <summary>
     /// 自身のインスタンスの一意の識別子
     /// </summary>
-    [SerializeField]
-    public int InstanceID
+    private int _instanceID
     {
         get { return GetInstanceID(); }
     }
@@ -131,7 +130,7 @@ public class WaterCollision : ObjectCreationMediate
 
         //インスタンスIDが小さいほうが進化、消去処理などを担当する
         _shouldRelease = 
-            (InstanceID < _othersWaterCollision.InstanceID);
+            _instanceID < _othersWaterCollision._instanceID;
         
         if (_shouldRelease)
         {
