@@ -16,7 +16,7 @@ public class WaterMaximumEvolutionData : ScriptableObject
     /// </summary>
     public int MaximumEvolveType
     {
-        get { return (int)_waterVariousObjectData.MyWaterType; }
+        get { return (int)_waterVariousObjectData.MyType; }
         private set { }
     }
 }

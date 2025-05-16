@@ -48,7 +48,7 @@ public class RandomWaterSelect : MonoBehaviour
             _waterCollisions[i] = _waterPrefabs[i].GetComponent<WaterCollision>();
 
             _waterPrefabPools[i] =
-                ObjectPoolManager.Instance.GetPoolByType(_waterCollisions[i]._waterVariousObjectData.MyWaterType);
+                ObjectPoolManager.Instance.GetPoolByType(_waterCollisions[i]._waterVariousObjectData.MyType);
 
 
 

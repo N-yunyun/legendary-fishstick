@@ -10,6 +10,11 @@ public class ScoreManager : Singleton<ScoreManager>
     /// </summary>
     [SerializeField] private ScoreDisplay _scoreDisplay;
     /// <summary>
+    /// 定数データファイル
+    /// </summary>
+    [Header("定数のデータファイル(ScriptableObject)をセット")]
+    [SerializeField] private ConstData _constData;
+    /// <summary>
     /// 現在のスコア
     /// </summary>
     private int _score;
@@ -31,6 +36,21 @@ public class ScoreManager : Singleton<ScoreManager>
     {
         //スコアを加算する
         _score += score;
-        _scoreDisplay?.DisplayingScore(_score); // UIにも伝える
+
+        //スコアが上限値を超えたら規制する
+        if (_score >= _constData.MaxScoreLimit)
+        {
+            RegulatingScore();
+        }
+
+        // UIにも伝える
+        _scoreDisplay?.DisplayingScore(_score); 
+    }
+    /// <summary>
+    /// スコアに上限値を代入する
+    /// </summary>
+    private void RegulatingScore()
+    {
+        _score = _constData.MaxScoreLimit;
     }
 }

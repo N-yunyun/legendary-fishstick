@@ -22,7 +22,7 @@ public class WaterCollision : ObjectCreationMediate
     /// 定数データファイル(計算の値などに使用)
     /// </summary>
     [Header("定数データファイル(ScriptableObject)をセット")]
-    [SerializeField] private WaterObjectConstData _waterObjectConstData = null;
+    [SerializeField] private ConstData _constData = null;
     /// <summary>
     /// オブジェクト各種類のデータファイル(オブジェクトの固有の情報を取得するのに使用)
     /// </summary>
@@ -90,7 +90,7 @@ public class WaterCollision : ObjectCreationMediate
     private void Start()
     {
         //プールの取得
-        _myObjectPool = GetObjectPool(_waterVariousObjectData.MyWaterType);
+        _myObjectPool = GetObjectPool(_waterVariousObjectData.MyType);
 
         //進化先のオブジェクトのnullチェック(nullだと最終進化系)
         if (_waterVariousObjectData.NextEvolvingObject != null)
@@ -98,11 +98,12 @@ public class WaterCollision : ObjectCreationMediate
             //nullじゃなければ進化先のオブジェクトのプールも取得
             _evolvedObjectPool =
                 GetObjectPool
-                (_waterVariousObjectData.NextEvolvingObject._waterVariousObjectData.MyWaterType);
+                (_waterVariousObjectData.NextEvolvingObject._waterVariousObjectData.MyType);
 
             //取得後のプールnullチェック
             if (_evolvedObjectPool == null)
             {
+                Debug.LogError("自分のオブジェクト名は！" + this.name);
                 Debug.LogError("進化先のオブジェクトに対応するプールがありません！");
             }
         }
@@ -120,7 +121,7 @@ public class WaterCollision : ObjectCreationMediate
         {
             return;
         }
-        if (_othersWaterCollision._waterVariousObjectData.MyWaterType != this._waterVariousObjectData.MyWaterType)
+        if (_othersWaterCollision._waterVariousObjectData.MyType != this._waterVariousObjectData.MyType)
         {
             //使わないので初期化する
             _othersWaterCollision = null;
@@ -185,11 +186,11 @@ public class WaterCollision : ObjectCreationMediate
     {
         //①接触した相手と自分の速度の平均を求める
         _evolvedGameObjectVelocity =
-            (_thisRigidbody.velocity + _othersRigidbody.velocity) / _waterObjectConstData.HalfDivider;
+            (_thisRigidbody.velocity + _othersRigidbody.velocity) / _constData.HalfDivider;
 
         //②接触した相手と自分の角速度の平均も求める
         _myselfAndOtherAngularVelocity =
-            (_thisRigidbody.angularVelocity + _othersRigidbody.angularVelocity) / _waterObjectConstData.HalfDivider;
+            (_thisRigidbody.angularVelocity + _othersRigidbody.angularVelocity) / _constData.HalfDivider;
 
         //①と②で計算した値をそれぞれ
         //新しく生成したオブジェクトの速度と角速度に与える
@@ -202,14 +203,14 @@ public class WaterCollision : ObjectCreationMediate
     private void GetCollisionCenterPositionAndLinearInterpolation()
     {
         //二つの水がぶつかった接触部分の中心の位置
-        _thisAndOthersCenter = (transform.position + _othersWaterCollision.transform.position) / _waterObjectConstData.HalfDivider;
+        _thisAndOthersCenter = (transform.position + _othersWaterCollision.transform.position) / _constData.HalfDivider;
         //二つの水の間を滑らかに移動させるための補間
-        _thisAndOthersRotation = Quaternion.Lerp(transform.rotation, _othersWaterCollision.transform.rotation, _waterObjectConstData.MyCurrentPosition);
+        _thisAndOthersRotation = Quaternion.Lerp(transform.rotation, _othersWaterCollision.transform.rotation, _constData.MyCurrentPosition);
     }
     /// <summary>
     /// 自分と進化先のオブジェクトのプールを取得する
     /// </summary>
-    private ObjectPool<WaterCollision> GetObjectPool(WaterVariousObjectData.WaterType waterType)
+    private ObjectPool<WaterCollision> GetObjectPool(WaterVariousObjectData.ObjectType waterType)
     {
         //自分のオブジェクトと進化先のプレハブに対応するプールを取得
         return ObjectPoolManager.Instance.GetPoolByType(waterType);

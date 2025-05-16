@@ -8,48 +8,61 @@ public class WaterVariousObjectData : ScriptableObject
     /// <summary>
     ///オブジェクトのタイプのカテゴリ
     /// </summary>
-    public enum WaterType
+    public enum ObjectType
     {
         /// <summary>
-        /// 雫
+        /// アメジスト 
         /// </summary>
-        Drop = 0,
+        Amethyst = 0,
         /// <summary>
-        /// 水
+        /// トルマリン 
         /// </summary>
-        Water,
+        Tourmaline,
         /// <summary>
-        /// 水たまり
+        /// ルビー 
         /// </summary>
-        Puddle,
+        Ruby,
         /// <summary>
-        /// 池
+        /// アクアマリン
         /// </summary>
-        Pond,
+        Aquamarine,
         /// <summary>
-        /// 湖
+        ///カーネリアン 
         /// </summary>
-        Lake,
+        Carnelian,
         /// <summary>
-        /// 川
+        /// シトリン
         /// </summary>
-        River,
+        Citrine,
         /// <summary>
-        /// 海
+        /// ムーンストーン 
         /// </summary>
-        Sea,
+        Moonstone,
+        /// <summary>
+        /// ジェイド
+        /// </summary>
+        Jade,
+        /// <summary>
+        /// クンツァイト
+        /// </summary>
+        Kunzite,
+        /// <summary>
+        /// サファイア 
+        /// </summary>
+        Sapphire,
+        
     }
     /// <summary>
     /// 自分のオブジェクトのタイプ
     /// </summary>
     [Header("自分のタイプを設定する")]
-    [SerializeField]private WaterType _myWaterType;
+    [SerializeField]private ObjectType _myType;
     /// <summary>
     /// 自分のオブジェクトの種類(Get)
     /// </summary>
-    public WaterType MyWaterType
+    public ObjectType MyType
     {
-        get => _myWaterType;
+        get => _myType;
         private set { }
     }
     /// <summary>

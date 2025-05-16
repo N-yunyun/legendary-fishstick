@@ -15,5 +15,5 @@ public class WaterDataBase : ScriptableObject
     /// 定数データファイル
     /// </summary>
     [Header("定数のデータファイル(ScriptableObject)をセット")]
-    public WaterObjectConstData _waterObjectConstBase;
+    public ConstData _constData;
 }

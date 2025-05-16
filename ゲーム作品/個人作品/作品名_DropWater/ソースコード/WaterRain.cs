@@ -28,7 +28,7 @@ public class WaterRain : MonoBehaviour
     /// 定数データファイル
     /// </summary>
     [Header("定数のデータファイル(ScriptableObject)をセット")]
-    [SerializeField] private WaterObjectConstData _waterObjectConstBase = default;
+    [SerializeField] private ConstData _constData = default;
     /// <summary>
     /// キャッシュ用
     /// </summary>
@@ -55,7 +55,7 @@ public class WaterRain : MonoBehaviour
     private void Start()
     {
         //ガーベジコレクションを防ぐため、キャッシュする
-        _specifiedWaitForSeconds = new WaitForSeconds(_waterObjectConstBase.NextObjectGeneratedCoolTime);
+        _specifiedWaitForSeconds = new WaitForSeconds(_constData.NextObjectGeneratedCoolTime);
 
         //水を生成するスクリプトを引数1秒でコルーチン発動
         StartCoroutine(HandleWater());
@@ -161,7 +161,7 @@ public class WaterRain : MonoBehaviour
     {
         //左右キーで移動
         _horizontalInputValue = 
-            Input.GetAxisRaw("Horizontal") * _waterObjectConstBase.SpawnerMoveSpeed * Time.deltaTime;
+            Input.GetAxisRaw("Horizontal") * _constData.SpawnerMoveSpeed * Time.deltaTime;
     }
     /// <summary>
     /// 移動範囲を制限する
@@ -169,7 +169,7 @@ public class WaterRain : MonoBehaviour
     private void MoveAreaRestricted()
     {
         //最小と最大を設定し入力された値を範囲を超えないように制限
-        _ControlledTransformPositionX = Mathf.Clamp(transform.position.x + _horizontalInputValue, _waterObjectConstBase.SpawnerLeftLimit, _waterObjectConstBase.SpawnerRightLimit);
+        _ControlledTransformPositionX = Mathf.Clamp(transform.position.x + _horizontalInputValue, _constData.SpawnerLeftLimit, _constData.SpawnerRightLimit);
         transform.position = new Vector3(_ControlledTransformPositionX, transform.position.y, transform.position.z);
 
     }

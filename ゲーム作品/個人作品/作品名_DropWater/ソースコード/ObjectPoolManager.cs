@@ -10,7 +10,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     /// <summary>
     /// WaterType に対応する WaterCollision のプールを格納した Dictionary
     /// </summary>
-    private Dictionary<WaterVariousObjectData.WaterType, ObjectPool<WaterCollision>> _poolByWaterType = default;
+    private Dictionary<WaterVariousObjectData.ObjectType, ObjectPool<WaterCollision>> _poolByWaterType = default;
     /// <summary>
     /// 各オブジェクトデータや定数データをすべて格納したデータファイル
     /// </summary>
@@ -25,7 +25,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
 
         //初期化処理
         _poolByWaterType =
-                new Dictionary<WaterVariousObjectData.WaterType, ObjectPool<WaterCollision>>();
+                new Dictionary<WaterVariousObjectData.ObjectType, ObjectPool<WaterCollision>>();
         //オブジェクトプールを初期化
         InitializePools();
 
@@ -42,9 +42,8 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
             GameObject indexPrefab = data.MyObjectPrefab;
 
             //要素のオブジェクトタイプ
-            WaterVariousObjectData.WaterType indexType = data.MyWaterType;
+            WaterVariousObjectData.ObjectType indexType = data.MyType;
 
-            //
             ObjectPool<WaterCollision> objectPool = new ObjectPool<WaterCollision>(
                 createFunc: () =>
                 {
@@ -72,12 +71,12 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
                     obj.ResetPhysicsState();
                 },
                 collectionCheck: true,
-                defaultCapacity: _waterDataArray._waterObjectConstBase.InitialCapacity,
-                maxSize: _waterDataArray._waterObjectConstBase.MaximumCapacity
+                defaultCapacity: _waterDataArray._constData.InitialCapacity,
+                maxSize: _waterDataArray._constData.MaximumCapacity
             );
 
             //初期容量までオブジェクトを生成して格納する
-            CreateObjectsUpToCapacity(objectPool, _waterDataArray._waterObjectConstBase.InitialCapacity);
+            CreateObjectsUpToCapacity(objectPool, _waterDataArray._constData.InitialCapacity);
             _poolByWaterType[indexType] = objectPool;
         }
     }
@@ -99,7 +98,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     /// </summary>
     /// <param name="type">プールを取得したいオブジェクトのMyWaterType</param>
     /// <returns>対応する ObjectPool<GameObject>。見つからない場合は null。</returns>
-    public ObjectPool<WaterCollision> GetPoolByType(WaterVariousObjectData.WaterType type)
+    public ObjectPool<WaterCollision> GetPoolByType(WaterVariousObjectData.ObjectType type)
     {
         _poolByWaterType.TryGetValue(type, out ObjectPool<WaterCollision> pool);
         return pool;
