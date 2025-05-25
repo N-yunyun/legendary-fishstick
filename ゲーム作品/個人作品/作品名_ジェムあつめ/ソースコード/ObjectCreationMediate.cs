@@ -7,13 +7,13 @@ using UnityEngine.Pool;
 public class ObjectCreationMediate : MonoBehaviour
 {
     [SerializeField]
-    private WaterMaximumEvolutionData _waterMaximumEvolutionData;
+    private MaximumEvolutionData _waterMaximumEvolutionData;
     /// <summary>
     /// 受け取ったオブジェクトプールからオブジェクトをゲットしてくる
     /// </summary>
     /// <param name="getObjectPool">取得したいオブジェクト</param>
     /// <returns>プールから取得したオブジェクト</returns>
-    public WaterCollision SpawnObject(ObjectPool<WaterCollision> getObjectPool)
+    public ObjectsCollision SpawnObject(ObjectPool<ObjectsCollision> getObjectPool)
     {
         return getObjectPool.Get();
     }
@@ -21,8 +21,8 @@ public class ObjectCreationMediate : MonoBehaviour
     /// プールに返却したいオブジェクトをプールに返却する
     /// </summary>
     /// <param name="releaseObjectPool">返却したいオブジェクトのプール</param>
-    /// <param name="releaseObject">返却したいオブジェクト(WaterCollision型)</param>
-    public void ReleaseObject(ObjectPool<WaterCollision> releaseObjectPool,WaterCollision releaseObject)
+    /// <param name="releaseObject">返却したいオブジェクト(ObjectsCollisionn型)</param>
+    public void ReleaseObject(ObjectPool<ObjectsCollision> releaseObjectPool,ObjectsCollision releaseObject)
     {
         releaseObjectPool.Release(releaseObject);
     }

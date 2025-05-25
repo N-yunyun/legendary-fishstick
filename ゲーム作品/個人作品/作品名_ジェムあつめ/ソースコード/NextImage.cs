@@ -7,16 +7,16 @@ using UnityEngine.UI;
 public class NextImage : MonoBehaviour
 {
     [Header("登場するオブジェクトを表示させたいimageをセット")]
-    [SerializeField] private Image NextWaterImage;
+    [SerializeField] private Image _nextImage;
     [Header("RandomWaterSelectorをセット")]
-    [SerializeField] private RandomWaterSelect randomWaterSelect;
+    [SerializeField] private RandomObjectsSelect _randomObjectsSelecter;
 
     /// <summary>
     /// 次に出てくるオブジェクトのスプライトをimageに入れる
     /// </summary>
     public void NextImageInsert()
     {
-        NextWaterImage.sprite = randomWaterSelect.ReservedObject.GetComponent<SpriteRenderer>().sprite;
+        _nextImage.sprite = _randomObjectsSelecter.ReservedObject.GetComponent<SpriteRenderer>().sprite;
     }
 
 

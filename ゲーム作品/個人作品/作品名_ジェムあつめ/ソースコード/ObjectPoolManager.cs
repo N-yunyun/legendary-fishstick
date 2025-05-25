@@ -10,13 +10,13 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     /// <summary>
     /// WaterType に対応する WaterCollision のプールを格納した Dictionary
     /// </summary>
-    private Dictionary<WaterVariousObjectData.ObjectType, ObjectPool<WaterCollision>> _poolByWaterType = default;
+    private Dictionary<VariousObjectData.ObjectType, ObjectPool<ObjectsCollision>> _poolByObjectsType = default;
     /// <summary>
     /// 各オブジェクトデータや定数データをすべて格納したデータファイル
     /// </summary>
     [Header("オブジェクトデータ(ScriptableObject)をセット")]
     [SerializeField]
-    private WaterDataBase _waterDataArray = default;
+    private ObjectsDataBase _dataArray = default;
     #endregion
     protected override void Awake()
     {
@@ -24,8 +24,8 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
         base.Awake();
 
         //初期化処理
-        _poolByWaterType =
-                new Dictionary<WaterVariousObjectData.ObjectType, ObjectPool<WaterCollision>>();
+        _poolByObjectsType =
+                new Dictionary<VariousObjectData.ObjectType, ObjectPool<ObjectsCollision>>();
         //オブジェクトプールを初期化
         InitializePools();
 
@@ -36,48 +36,50 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     private void InitializePools()
     {
         //_waterDataArraysの要素(登場させたいオブジェクトのデータの種類)数だけ行う
-        foreach (WaterVariousObjectData data in _waterDataArray._waterDataList)
+        foreach (VariousObjectData data in _dataArray._dataList)
         {
             //要素のプレハブ
             GameObject indexPrefab = data.MyObjectPrefab;
 
             //要素のオブジェクトタイプ
-            WaterVariousObjectData.ObjectType indexType = data.MyType;
+            VariousObjectData.ObjectType indexType = data.MyType;
 
-            ObjectPool<WaterCollision> objectPool = new ObjectPool<WaterCollision>(
+            ObjectPool<ObjectsCollision> objectPool = new ObjectPool<ObjectsCollision>(
                 createFunc: () =>
                 {
                     //要素のプレハブと同じプレハブが生成されるようにする
                     GameObject instance = Instantiate(indexPrefab);
 
                     //WaterCollision型なのでコンポーネントを取得
-                    WaterCollision prefabWaterCollision = instance.GetComponent<WaterCollision>();
+                    ObjectsCollision prefabObjectsCollision = instance.GetComponent<ObjectsCollision>();
 
                     //コンポーネントのnullチェック
-                    if (prefabWaterCollision == null)
+                    if (prefabObjectsCollision == null)
                     {
                         Debug.LogError("WaterCollision がアタッチされていません：" + instance.name);
                     }
 
-                    return prefabWaterCollision;
+                    return prefabObjectsCollision;
                 },
                 actionOnGet: obj =>
                 {
+                    //オブジェクトのコンポーネントのみ有効化
                     obj.EnableVisuals();
                 },
                 actionOnRelease: obj =>
                 {
+                    //オブジェクトのコンポーネントのみ無効化
                     obj.DisableVisuals();
+                    //物理挙動の値をリセット
                     obj.ResetPhysicsState();
                 },
                 collectionCheck: true,
-                defaultCapacity: _waterDataArray._constData.InitialCapacity,
-                maxSize: _waterDataArray._constData.MaximumCapacity
+                defaultCapacity: _dataArray._constData.InitialCapacity,
+                maxSize: _dataArray._constData.MaximumCapacity
             );
-
             //初期容量までオブジェクトを生成して格納する
-            CreateObjectsUpToCapacity(objectPool, _waterDataArray._constData.InitialCapacity);
-            _poolByWaterType[indexType] = objectPool;
+            CreateObjectsUpToCapacity(objectPool, _dataArray._constData.InitialCapacity);
+            _poolByObjectsType[indexType] = objectPool;
         }
     }
     /// <summary>
@@ -85,22 +87,22 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     /// </summary>
     /// <param name="pool"></param>
     /// <param name="capacity"></param>
-    public void CreateObjectsUpToCapacity(ObjectPool<WaterCollision> pool, int capacity)
+    public void CreateObjectsUpToCapacity(ObjectPool<ObjectsCollision> pool, int capacity)
     {
         for (int i = 0; i < capacity; i++)
         {
-            WaterCollision waterObj = pool.Get();
-            pool.Release(waterObj);
+            ObjectsCollision objectsCollision = pool.Get();
+            pool.Release(objectsCollision);
         }
     }
     /// <summary>
-    /// 対応するオブジェクトプールを取得する (WaterCollision から呼び出す用)
+    /// 対応するオブジェクトプールを取得する (ObjectsCollision から呼び出す用)
     /// </summary>
-    /// <param name="type">プールを取得したいオブジェクトのMyWaterType</param>
+    /// <param name="type">プールを取得したいオブジェクトのMyType</param>
     /// <returns>対応する ObjectPool<GameObject>。見つからない場合は null。</returns>
-    public ObjectPool<WaterCollision> GetPoolByType(WaterVariousObjectData.ObjectType type)
+    public ObjectPool<ObjectsCollision> GetPoolByType(VariousObjectData.ObjectType type)
     {
-        _poolByWaterType.TryGetValue(type, out ObjectPool<WaterCollision> pool);
+        _poolByObjectsType.TryGetValue(type, out ObjectPool<ObjectsCollision> pool);
         return pool;
     }
 

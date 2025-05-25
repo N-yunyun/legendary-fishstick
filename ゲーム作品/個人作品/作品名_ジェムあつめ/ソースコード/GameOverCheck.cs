@@ -19,13 +19,13 @@ public class GameOverCheck : MonoBehaviour
     /// <summary>
     /// キャッシュしておいたWaitForSeconds
     /// </summary>
-    private WaitForSeconds _MonitoringWaitForSeconds;
+    private WaitForSeconds _monitoringWaitForSeconds;
     [Header("GameOverEventがアタッチされたオブジェクトをセット")]
     [SerializeField] private GameOverEvent _gameOverDisplay;
     #endregion
     private void Start()
     {
-        _MonitoringWaitForSeconds = new WaitForSeconds(_constData.MonitoringTime);
+        _monitoringWaitForSeconds = new WaitForSeconds(_constData.MonitoringTime);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -60,7 +60,7 @@ public class GameOverCheck : MonoBehaviour
     private IEnumerator WaitAndGameOver()
     {
         //水が枠内に入っているか監視するため、指定時間待つ
-        yield return _MonitoringWaitForSeconds;
+        yield return _monitoringWaitForSeconds;
         //待ち終わったらゲームオーバーイベントを呼ぶ
         _gameOverDisplay.CallGameOver();
 

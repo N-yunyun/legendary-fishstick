@@ -11,11 +11,11 @@ public class ScoreDisplay : MonoBehaviour
     /// </summary>
     [Header("ゲーム中のスコアを表示させたいテキストをセット")]
     [SerializeField]
-    private TextMeshProUGUI scoreTexts = null;
+    private TextMeshProUGUI _scoreTexts = null;
     #endregion
     private void Awake()
     {
-        scoreTexts.text = null;
+        _scoreTexts.text = null;
     }
     /// <summary>
     /// 受け取ったスコア分加算して、画面にスコアを描画する
@@ -24,6 +24,6 @@ public class ScoreDisplay : MonoBehaviour
     public void DisplayingScore(int score)
     {
         //スコアを文字型で表記(画面にスコアが表示される)
-        scoreTexts.text = score.ToString();
+        _scoreTexts.text = score.ToString();
     }
 }
